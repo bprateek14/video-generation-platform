@@ -28,7 +28,7 @@ const HistoryView: React.FC<HistoryViewProps> = ({ history }) => {
       <h2 className="text-2xl font-bold text-primary mb-4 border-b border-primary/20 pb-2">Generation History</h2>
       {generatedContent.length === 0 ? (
         <div className="flex-1 flex items-center justify-center">
-            <p className="text-text-secondary">No generations yet. Go to the Chat tab to create some!</p>
+            <p className="text-text-secondary">No generations yet. Go to the Generate tab to create some!</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

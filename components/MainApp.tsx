@@ -1,12 +1,12 @@
 import React, { useState, useCallback, SetStateAction } from 'react';
-import { ChatIcon, HistoryIcon, SettingsIcon, DashboardIcon } from './icons';
+import { GenerateIcon, HistoryIcon, SettingsIcon, DashboardIcon, SignOutIcon } from './icons';
 import ChatView from './ChatView';
 import HistoryView from './HistoryView';
 import SettingsView from './SettingsView';
 import DashboardView from './DashboardView';
 import { Message, Settings, ModelProvider } from '../types';
 
-type Tab = 'dashboard' | 'chat' | 'history' | 'settings';
+type Tab = 'dashboard' | 'generate' | 'history' | 'settings';
 
 // Fix: Updated the return type and setValue parameter to use SetStateAction
 // to allow passing state updater functions.
@@ -34,7 +34,11 @@ const useLocalStorage = <T,>(key: string, initialValue: T): [T, (value: SetState
     return [storedValue, setValue];
 };
 
-const MainApp: React.FC = () => {
+interface MainAppProps {
+    onLogout: () => void;
+}
+
+const MainApp: React.FC<MainAppProps> = ({ onLogout }) => {
     const [activeTab, setActiveTab] = useState<Tab>('dashboard');
     const [history, setHistory] = useLocalStorage<Message[]>('genforge-history', []);
     const [settings, setSettings] = useLocalStorage<Settings>('genforge-settings', {
@@ -53,7 +57,7 @@ const MainApp: React.FC = () => {
         switch (activeTab) {
             case 'dashboard':
                 return <DashboardView settings={settings} history={history} />;
-            case 'chat':
+            case 'generate':
                 return <ChatView history={history} setHistory={setHistoryCallback} settings={settings} />;
             case 'history':
                 return <HistoryView history={history} />;
@@ -84,10 +88,22 @@ const MainApp: React.FC = () => {
                         G
                     </div>
                 </div>
-                <NavItem tabName="dashboard" icon={<DashboardIcon />} label="Dashboard" />
-                <NavItem tabName="chat" icon={<ChatIcon />} label="Chat" />
-                <NavItem tabName="history" icon={<HistoryIcon />} label="History" />
-                <NavItem tabName="settings" icon={<SettingsIcon />} label="Settings" />
+                <div className="flex-1">
+                    <NavItem tabName="dashboard" icon={<DashboardIcon />} label="Dashboard" />
+                    <NavItem tabName="generate" icon={<GenerateIcon />} label="Generate" />
+                    <NavItem tabName="history" icon={<HistoryIcon />} label="History" />
+                    <NavItem tabName="settings" icon={<SettingsIcon />} label="Settings" />
+                </div>
+                <div className="border-t border-primary/20">
+                     <button
+                        onClick={onLogout}
+                        className="flex flex-col items-center justify-center p-3 w-full text-text-secondary hover:bg-red-500/10 hover:text-red-400 transition-colors duration-200"
+                        aria-label="Sign Out"
+                    >
+                        <SignOutIcon />
+                        <span className="text-xs mt-1">Sign Out</span>
+                    </button>
+                </div>
             </nav>
             <main className="flex-1 flex flex-col overflow-hidden">
                 {renderTabContent()}
